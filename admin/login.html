@@ -38,6 +38,62 @@
     </div>
   </div>
 
+  
+  <!-- Modal -->
+  <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title">提示</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            Add rows here
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 </body>
-
+<script src="./js/login.js"></script>
+<script>
+  $('.input_sub').on('click',function(e){
+    console.log(34414)
+    e.preventDefault();
+    let name = $('.input_txt').val().trim();
+    let pass = $('.input_pass').val().trim();
+    if(name.length == 0||pass.length == 0){
+        $('.container-fluid').text('用户名和密码不能为空');
+        $('#modelId').modal();
+        return;
+    }
+    console.log(34414)
+    $.ajax({
+        url:'http://localhost:8080/api/v1/admin/user/login',
+        type:'post',
+        data:{
+            username:name,
+            password:pass
+        },
+        success:function(res){
+            console.log(res);
+            $('.container-fluid').text(res.msg);
+            $('#modelId').modal();
+            if(res.code == 200){
+                $('#modelId').on('hidden.bs.modal',function(){
+                  location.href = './index.html'
+                })
+                
+            }
+        }
+    })
+})
+</script>
 </html>
