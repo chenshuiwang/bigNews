@@ -69,5 +69,62 @@
         </div>
     </div>
 </body>
-
+<script src="./libs/http.js"></script>
+<script>
+    $(function(){
+        $.ajax({
+            url:window.BigNew.user_detail,
+            type:'get',
+            //dataType: 'json' //将返回的json格式的字符串转换成一个对象
+               // 设置请求头，在请求头中带上token
+                // headers: {
+                //     'Authorization': window.localStorage.getItem('token')
+                // },
+            success:function(res){
+                console.log(res);
+                if(res.code == 200){
+                    
+                   for(let key in res.data){
+                       $('input.'+key).val(res.data[key]);
+                       $('.user_pic').attr('src',res.data.userPic)
+                   }
+                }
+            }
+        })
+        $('#exampleInputFile').on('change',function(e){
+            let img = this.files[0];
+            let url = URL.createObjectURL(img);
+            $('.user_pic').attr('src',url);
+        })
+        $('.btn-edit').on('click',function(e){
+            e.preventDefault();
+            var form = $('#form')[0];
+            let  userdata = new FormData(form);
+            $.post({
+                url:BigNew.user_edit,
+                data:userdata,
+                processData: false,
+                //不需要设置请求的类型
+                contentType: false,
+                success:function(res){
+                    console.log(res)
+                    if(res.code == 200){
+                        $.ajax({
+                                type: 'get',
+                                url: window.BigNew.user_info,
+                                success: function (res) {
+                                    console.log(res);
+                                    //获取服务器返回的数据，使用这些数据去渲染页面的内容
+                                    parent.$('.user_info img').attr('src', res.data.userPic);
+                                    parent.$('.user_info span').html('欢迎&nbsp;&nbsp;' + res.data.nickname + '');
+                                    parent.$('.user_center_link>img').attr('src', res.data.userPic);
+                                }
+                            })
+                    }
+                }
+            })
+        })
+        
+    })
+</script>
 </html>
